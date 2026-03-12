@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Dayton Jewish Observer — Accountability Project</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+:root {
+  --blue: #0a3d8f;
+  --blue-mid: #1a5cb8;
+  --blue-light: #e8f0fc;
+  --red: #8b0000;
+  --red-mid: #b91c1c;
+  --ink: #0d0d0d;
+  --paper: #f8f5f0;
+  --cream: #fdfbf7;
+  --rule: #d4c9b8;
+  --gray: #6b6254;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--cream);
+  color: var(--ink);
+  overflow-x: hidden;
+}
+
+/* ── TYPOGRAPHY ── */
+.display { font-family: 'Playfair Display', serif; }
+.serif { font-family: 'DM Serif Display', serif; }
+
+/* ── MASTHEAD ── */
+.masthead-rule { height: 4px; background: linear-gradient(90deg, var(--blue) 0%, var(--blue) 60%, var(--red) 100%); }
+.dateline { font-size: 10px; letter-spacing: .22em; text-transform: uppercase; color: var(--gray); font-weight: 500; }
+
+.logo-the { font-family: 'Playfair Display', serif; font-style: italic; font-size: 1rem; color: var(--gray); }
+.logo-jewish { font-family: 'Playfair Display', serif; font-weight: 900; font-size: 4.8rem; color: var(--blue); line-height: .9; }
+.logo-observer { font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 1.85rem; letter-spacing: .25em; text-transform: uppercase; color: var(--ink); }
+.logo-kicker { font-size: 9px; letter-spacing: .5em; text-transform: uppercase; color: var(--red); font-weight: 700; }
+
+/* ── NAV ── */
+nav a {
+  font-size: 10.5px; font-weight: 700; letter-spacing: .18em;
+  text-transform: uppercase; color: var(--ink); text-decoration: none;
+  padding: 2px 0; border-bottom: 2px solid transparent;
+  transition: border-color .2s, color .2s;
+}
+nav a:hover, nav a.active { border-bottom-color: var(--blue); color: var(--blue); }
+
+/* ── SECTIONS ── */
+.section { display: none; }
+.section.active { display: block; animation: fadeUp .45s ease both; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ── ARTICLE CARDS & LABELS ── */
+.card-label {
+  font-size: 9px; font-weight: 700; letter-spacing: .3em;
+  text-transform: uppercase; padding: 3px 8px; display: inline-block;
+}
+.label-red { background: var(--red); color: white; }
+.label-blue { background: var(--blue); color: white; }
+.label-outline { border: 1.5px solid var(--rule); color: var(--gray); }
+.label-dark { background: var(--ink); color: white; }
+
+.headline-xl { font-family: 'Playfair Display', serif; font-weight: 900; font-size: clamp(2rem, 4.5vw, 3.6rem); line-height: 1.05; }
+.headline-lg { font-family: 'Playfair Display', serif; font-weight: 900; font-size: clamp(1.4rem, 3vw, 2.2rem); line-height: 1.1; }
+.headline-md { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.15rem; line-height: 1.2; }
+
+/* ── HERO ── */
+.hero-bg {
+  background: var(--ink);
+  position: relative;
+  overflow: hidden;
+  min-height: 520px;
+}
+.hero-bg::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(
+    0deg, transparent, transparent 39px, rgba(255,255,255,.03) 39px, rgba(255,255,255,.03) 40px
+  );
+  pointer-events: none;
+}
+.hero-gradient { background: linear-gradient(to top, rgba(0,0,0,.92) 0%, rgba(0,0,0,.5) 50%, rgba(0,0,0,.1) 100%); }
+
+/* ── PULL QUOTE ── */
+.pull-quote {
+  font-family: 'Playfair Display', serif; font-style: italic;
+  font-size: clamp(1.6rem, 3.5vw, 2.5rem); line-height: 1.3;
+  color: var(--ink);
+  border-left: 5px solid var(--blue);
+  padding-left: 1.5rem;
+}
+
+/* ── STAT BOXES & DOSSIERS ── */
+.stat-box {
+  border-top: 3px solid var(--blue);
+  padding: 1.5rem;
+  background: white;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+.stat-num {
+  font-family: 'Playfair Display', serif; font-weight: 900;
+  font-size: 2.8rem; color: var(--blue); line-height: 1;
+}
+.stat-label { font-size: 10px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: var(--gray); margin-top: .5rem; line-height: 1.4; }
+
+.dossier-card {
+  background: var(--ink);
+  color: white;
+  padding: 1.5rem;
+  border-top: 3px solid var(--red);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+.dossier-card .stat-num { color: white; }
+.dossier-card .stat-label { color: rgba(255,255,255,0.6); }
+
+/* ── TIMELINE & SPLIT SCREEN ── */
+.timeline-item { border-left: 2px solid var(--rule); padding-left: 1.5rem; position: relative; }
+.timeline-item::before {
+  content: ''; position: absolute; left: -6px; top: 4px;
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--blue); border: 2px solid var(--cream);
+}
+.timeline-item.critical::before { background: var(--red); }
+
+.split-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2.5rem;
+  padding: 2rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+.split-col { display: flex; flex-direction: column; gap: 1rem; }
+
+/* ── MISSING CONTEXT BOX ── */
+.missing-context {
+  background: var(--paper);
+  border-left: 4px solid var(--red);
+  padding: 1.25rem;
+  margin-top: 1rem;
+}
+.missing-context-label {
+  font-size: 9px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase;
+  color: var(--red); margin-bottom: .5rem;
+}
+.missing-context-text {
+  font-family: 'DM Serif Display', serif; font-style: italic; font-size: 1.05rem;
+  line-height: 1.5; color: var(--ink);
+}
+
+/* ── EVIDENCE CARD ── */
+.evidence-card {
+  border: 1px solid var(--rule);
+  background: white;
+  transition: border-color .2s, box-shadow .2s;
+}
+.evidence-card:hover { border-color: var(--blue); box-shadow: 0 4px 20px rgba(10,61,143,.1); }
+
+/* ── REDACTED ── */
+.redacted {
+  background: var(--ink); color: var(--ink);
+  cursor: help; border-radius: 2px; padding: 0 3px;
+  transition: color .4s ease;
+  user-select: none;
+}
+.redacted:hover { color: white; }
+
+/* ── DOCUMENT BLOCK ── */
+.doc-block {
+  background: var(--ink); color: white;
+  padding: 3rem;
+  position: relative;
+  overflow: hidden;
+}
+.doc-block::after {
+  content: '"';
+  position: absolute; right: -1rem; bottom: -3rem;
+  font-family: 'Playfair Display', serif;
+  font-size: 18rem; color: rgba(255,255,255,.04);
+  line-height: 1; pointer-events: none;
+}
+
+/* ── TABLE ── */
+.data-table { width: 100%; border-collapse: collapse; font-size: .82rem; }
+.data-table th { background: var(--ink); color: white; padding: .65rem 1rem; text-align: left; font-size: 9.5px; letter-spacing: .2em; text-transform: uppercase; }
+.data-table td { padding: .7rem 1rem; border-bottom: 1px solid var(--rule); }
+.data-table tr:hover td { background: var(--blue-light); }
+.flag-red { color: var(--red); font-weight: 700; }
+.flag-blue { color: var(--blue); font-weight: 700; }
+
+/* ── SIDEBAR ── */
+.sidebar-dark { background: var(--ink); color: white; }
+.sidebar-section { border-bottom: 1px solid rgba(255,255,255,.08); padding-bottom: 1.5rem; margin-bottom: 1.5rem; }
+.sidebar-section:last-child { border-bottom: none; }
+
+/* ── PROGRESS BAR ── */
+.progress-track { background: var(--rule); height: 6px; border-radius: 3px; overflow: hidden; }
+.progress-fill { height: 100%; border-radius: 3px; transition: width 1.2s ease; }
+
+/* ── PRINT-STYLE RULES ── */
+.rule-thin { height: 1px; background: var(--rule); }
+.rule-thick { height: 3px; background: var(--ink); }
+.rule-blue { height: 2px; background: var(--blue); }
+.rule-double {
+  height: 6px;
+  background: linear-gradient(to bottom, var(--ink) 0%, var(--ink) 2px, transparent 2px, transparent 4px, var(--ink) 4px);
+}
+
+/* ── BADGE ── */
+.badge-urgent {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--red); color: white;
+  font-size: 9px; font-weight: 700; letter-spacing: .25em; text-transform: uppercase;
+  padding: 4px 10px; border-radius: 2px;
+}
+.badge-urgent::before { content: '●'; font-size: 7px; animation: pulse-dot 1.2s infinite; }
+@keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: .3; } }
+
+/* ── NAV TABS ── */
+.tab-btn {
+  font-size: 10px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase;
+  padding: .55rem 1.2rem; border: 1.5px solid var(--rule);
+  background: white; color: var(--gray); cursor: pointer;
+  transition: all .2s; border-radius: 2px;
+}
+.tab-btn:hover { border-color: var(--blue); color: var(--blue); }
+.tab-btn.active { background: var(--blue); border-color: var(--blue); color: white; }
+
+/* ── CHART CONTAINER ── */
+.chart-wrap { position: relative; height: 260px; }
+
+/* ── ARCHIVE TABLE ── */
+.archive-row { display: grid; grid-template-columns: 80px 1fr 140px 100px; gap: 1rem; align-items: center; padding: .8rem 1rem; border-bottom: 1px solid var(--rule); transition: background .15s; }
+.archive-row:hover { background: var(--blue-light); }
+.archive-row.header { background: var(--ink); color: white; }
+.archive-tag { font-size: 8.5px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; padding: 2px 6px; border-radius: 2px; }
+
+/* ── STICKY HEADER ── */
+.sticky-top { position: sticky; top: 0; z-index: 50; background: var(--cream); border-bottom: 1px solid var(--rule); }
+
+/* ── SCROLL REVEAL (JS-driven) ── */
+.reveal { opacity: 0; transform: translateY(20px); transition: opacity .5s ease, transform .5s ease; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* ── COMPARE GRID ── */
+.compare-col { border: 1px solid var(--rule); padding: 1.5rem; background: white; }
+.compare-col.observer { border-top: 4px solid var(--blue); }
+.compare-col.icj { border-top: 4px solid var(--red); }
+.compare-item { font-size: .88rem; padding: .8rem 0; border-bottom: 1px solid var(--rule); display: flex; gap: .75rem; align-items: flex-start; line-height: 1.5; }
+.compare-item:last-child { border-bottom: none; }
+.compare-item::before { content: '→'; font-size: .85rem; color: var(--gray); flex-shrink: 0; margin-top: 2px; }
+
+/* ── FLOW GRAPHIC ── */
+.flow-box {
+  background: var(--paper);
+  padding: .85rem;
+  width: 100%;
+  border: 1px solid var(--rule);
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  font-size: .85rem;
+  font-weight: 700;
+}
+.flow-arrow {
+  color: var(--blue);
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+/* ── TOOLTIP ── */
+[data-tip] { position: relative; cursor: help; }
+[data-tip]:hover::after {
+  content: attr(data-tip);
+  position: absolute; bottom: 110%; left: 50%; transform: translateX(-50%);
+  background: var(--ink); color: white; font-size: 10px; letter-spacing: .05em;
+  padding: 5px 10px; border-radius: 3px; white-space: nowrap; z-index: 200;
+  pointer-events: none;
+}
+
+/* ── MOBILE ── */
+@media (max-width: 768px) {
+  .logo-jewish { font-size: 3rem; }
+  .logo-observer { font-size: 1.3rem; }
+  .archive-row { grid-template-columns: 1fr 1fr; }
+  .split-row { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="masthead-rule"></div>
+<div class="sticky-top">
+  <div style="max-width:1280px;margin:auto;padding:.45rem 1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;">
+    <span class="dateline">Accountability Project · Forensic Audit FY2024 · Independent Monitor</span>
+    <div style="display:flex;gap:.6rem;flex-wrap:wrap;">
+      <button class="tab-btn active" onclick="showSection('home',this)">Overview</button>
+      <button class="tab-btn" onclick="showSection('money',this)">Follow the Money</button>
+      <button class="tab-btn" onclick="showSection('policy',this)">Policy & Mandate</button>
+      <button class="tab-btn" onclick="showSection('media',this)">Media Audit</button>
+      <button class="tab-btn" onclick="showSection('advertisers',this)">Advertisers</button>
+      <button class="tab-btn" onclick="showSection('archive',this)">Archive</button>
+    </div>
+    <div class="badge-urgent">Live Analysis</div>
+  </div>
+</div>
+
+<!-- MASTHEAD -->
+<header style="max-width:1280px;margin:auto;padding:2.5rem 1.5rem 0;">
+  <div style="text-align:center;padding-bottom:1.5rem;">
+    <div style="display:inline-flex;align-items:baseline;gap:.4rem;margin-bottom:.1rem;">
+      <span class="logo-the">The Dayton</span>
+      <span class="logo-jewish">Jewish</span>
+    </div>
+    <div class="logo-observer">Observer</div>
+    <div style="margin-top:.6rem;display:flex;align-items:center;justify-content:center;gap:.75rem;">
+      <div class="rule-thin" style="width:3rem;"></div>
+      <span class="logo-kicker">Accountability Project</span>
+      <div class="rule-thin" style="width:3rem;"></div>
+    </div>
+  </div>
+  <div class="rule-double"></div>
+</header>
+
+<main style="max-width:1280px;margin:auto;padding:2rem 1.5rem 4rem;">
+
+<!-- ═══════════════════════════════════════════════════════ HOME -->
+<section id="home" class="section active">
+
+  <!-- HERO ARTICLE -->
+  <div class="hero-bg reveal" style="margin-bottom:2.5rem;">
+    <div class="hero-gradient" style="position:absolute;inset:0;z-index:1;"></div>
+    <div style="position:relative;z-index:2;padding:3rem;display:flex;flex-direction:column;justify-content:flex-end;min-height:520px;">
+      <div style="max-width:780px;">
+        <div style="margin-bottom:1rem;display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;">
+          <span class="card-label label-red">Urgent · Financial Disclosure</span>
+          <span style="font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.45);">FY 2024 Audit · Primary Source Verified</span>
+        </div>
+        <h1 class="headline-xl" style="color:white;margin-bottom:1rem;">The $850,000 Transfer:<br>Mobilizing Capital During International Conflict</h1>
+        <p style="font-family:'DM Serif Display',serif;font-style:italic;color:rgba(255,255,255,.8);font-size:1.15rem;line-height:1.6;max-width:700px;margin-bottom:1.5rem;">
+          In early 2024, the Jewish Federation of Greater Dayton announced that it had raised approximately $850,000 to support the State of Israel following the October 7 attacks. That number appears prominently in the Federation’s own messaging about its impact. According to the organization’s materials, the Federation raises about $1.25 million annually.
+          <br><br>
+          This represents a massive mobilization of local capital toward a foreign political and military conflict. This site exists because an institution acting as a political fundraiser while operating a local newspaper deserves scrutiny.
+        </p>
+        <button onclick="showSection('money',document.querySelectorAll('.tab-btn')[1])" style="background:white;color:var(--ink);font-size:10px;font-weight:700;letter-spacing:.25em;text-transform:uppercase;padding:.7rem 1.5rem;border:none;cursor:pointer;transition:background .2s;" onmouseover="this.style.background='var(--blue-light)'" onmouseout="this.style.background='white'">
+          Read the Investigation →
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATS ROW (UPDATED WITH SPECIFIC REQUESTS) -->
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-bottom:2.5rem;" class="reveal">
+    <div class="stat-box">
+      <div class="stat-num">$850K</div>
+      <div class="stat-label">Raised for Israel post-Oct 7</div>
+    </div>
+    <div class="stat-box" style="border-top-color:var(--ink);">
+      <div class="stat-num">$1.25M</div>
+      <div class="stat-label">Reported Annual Fundraising</div>
+    </div>
+    <div class="stat-box" style="border-top-color:var(--red);">
+      <div class="stat-num" style="color:var(--red);">0</div>
+      <div class="stat-label">ICJ Proceedings Covered by Observer</div>
+    </div>
+    <div class="stat-box" style="border-top-color:var(--red);">
+      <div class="stat-num" style="color:var(--red);">0</div>
+      <div class="stat-label">Condemnations of Settlements or Settler Violence Found</div>
+    </div>
+    <div class="stat-box" style="border-top-color:var(--gray);">
+      <div class="stat-num" style="font-size:2rem;">501(c)3</div>
+      <div class="stat-label">Non-Profit Status — Operating as a Political Actor</div>
+    </div>
+  </div>
+
+  <!-- TWO-COLUMN BODY -->
+  <div style="display:grid;grid-template-columns:1fr 380px;gap:2.5rem;align-items:start;">
+    <div>
+      <!-- NARRATIVE INTRO -->
+      <div class="reveal" style="margin-bottom:2.5rem;">
+        <h3 class="headline-lg" style="margin-bottom:1rem;">This is the Gap</h3>
+        <p style="font-size:1rem;line-height:1.8;color:var(--ink);margin-bottom:1rem;">
+          The Federation raised major money for Israel and the Observer amplified solidarity messaging. But where was the scrutiny? Where was the coverage of the ICJ? Where was the condemnation of settlements, settler violence, or any Israeli wrongdoing at all?
+        </p>
+        <p style="font-size:1.05rem;font-weight:700;line-height:1.8;color:var(--ink);margin-top:1rem;border-left: 3px solid var(--red);padding-left:1rem;">
+          That’s the issue. Not support in the abstract. Unconditional support during a period of extraordinary allegations and international legal scrutiny.
+        </p>
+      </div>
+
+      <div class="rule-thick" style="margin-bottom:1.5rem;"></div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-bottom:2.5rem;">
+        <article class="reveal" style="cursor:pointer;" onclick="showSection('policy',document.querySelectorAll('.tab-btn')[2])">
+          <span class="card-label label-blue" style="margin-bottom:.75rem;">Policy Audit</span>
+          <h3 class="headline-md" style="margin-bottom:.65rem;">When Institutional Positions Shape Coverage</h3>
+          <div class="rule-thin" style="margin:.75rem 0;"></div>
+          <p style="font-size:.82rem;line-height:1.65;color:var(--gray);margin-bottom:.75rem;">
+            A deep investigation into the Federation's constitutional requirement of unconditional support for the State of Israel.
+          </p>
+          <span style="font-size:9.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--blue);">Read Policy Audit →</span>
+        </article>
+
+        <article class="reveal" style="cursor:pointer;" onclick="showSection('media',document.querySelectorAll('.tab-btn')[3])">
+          <span class="card-label label-outline" style="margin-bottom:.75rem;">Media Audit</span>
+          <h3 class="headline-md" style="margin-bottom:.65rem;">Observer vs. The World</h3>
+          <div class="rule-thin" style="margin:.75rem 0;"></div>
+          <p style="font-size:.82rem;line-height:1.65;color:var(--gray);margin-bottom:.75rem;">
+            A side-by-side comparison of major international legal developments regarding the war with local editorial decisions.
+          </p>
+          <span style="font-size:9.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--blue);">View Comparison →</span>
+        </article>
+      </div>
+      
+      <!-- THEY SAID IT THEMSELVES (QUOTE WALL) -->
+      <div class="reveal" style="margin-top:2.5rem;padding:2rem;background:white;border:1px solid var(--rule);">
+        <h3 class="headline-md" style="margin-bottom:1.5rem;">They Said It Themselves</h3>
+        <div style="display:flex;flex-direction:column;gap:1.5rem;">
+          <div>
+            <p style="font-family:'Playfair Display',serif;font-style:italic;font-size:1.3rem;line-height:1.4;margin-bottom:.5rem;">"We stand as a united community to show our support for the people of Israel."</p>
+            <p style="font-size:.8rem;color:var(--gray);font-weight:600;">— Cathy Gardner, Federation CEO, quoted in the Observer (Oct. 9, 2023)</p>
+            <div style="margin-top:.5rem;padding:.5rem;background:var(--paper);font-size:.8rem;color:var(--red);border-left:2px solid var(--red);">No mention of Palestinian civilians. No mention of Israeli wrongdoing.</div>
+          </div>
+          <div class="rule-thin"></div>
+          <div>
+            <p style="font-family:'Playfair Display',serif;font-style:italic;font-size:1.3rem;line-height:1.4;margin-bottom:.5rem;">"There is no hiding it — our support for Israel is clear... it is a line in the sand that makes it unlikely we could have a simple 'agree to disagree' conversation."</p>
+            <p style="font-size:.8rem;color:var(--gray);font-weight:600;">— Dan Sweeny, Federation Board President</p>
+            <div style="margin-top:.5rem;padding:.5rem;background:var(--paper);font-size:.8rem;color:var(--red);border-left:2px solid var(--red);">Declares unconditional political alignment as a non-negotiable institutional absolute.</div>
+          </div>
+          <div class="rule-thin"></div>
+          <div>
+            <p style="font-family:'Playfair Display',serif;font-style:italic;font-size:1.3rem;line-height:1.4;margin-bottom:.5rem;">"$850,000 raised for Israel. $1,250,000 raised annually."</p>
+            <p style="font-size:.8rem;color:var(--gray);font-weight:600;">— Federation "Our Impact" Public Metrics (FY24)</p>
+            <div style="margin-top:.5rem;padding:.5rem;background:var(--paper);font-size:.8rem;color:var(--red);border-left:2px solid var(--red);">Community capital mobilized during active ICJ genocide proceedings.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SIDEBAR -->
+    <aside>
+      <div class="evidence-card reveal" style="padding:1.5rem;margin-bottom:1.25rem;">
+        <div class="card-label label-red" style="margin-bottom:.75rem;">Why This Site Exists</div>
+        <p style="font-family:'DM Serif Display',serif;font-style:italic;font-size:.9rem;line-height:1.7;color:var(--ink);margin-bottom:1rem;">
+          This project evaluates the Federation strictly on its actions as a political entity and a media publisher, entirely distinct from the cultural or religious identity of the community it claims to represent.
+        </p>
+        <p style="font-family:'DM Serif Display',serif;font-style:italic;font-size:.9rem;line-height:1.7;color:var(--ink);margin-bottom:1rem;">
+          Institutions that claim public trust — especially those that operate news publications — have a responsibility to provide complete information. When a newspaper consistently amplifies a specific geopolitical perspective while ignoring major global developments, readers deserve to know.
+        </p>
+        <p style="font-family:'DM Serif Display',serif;font-style:italic;font-size:.9rem;line-height:1.7;color:var(--ink);">
+          And when large sums of community money are mobilized for a foreign state during an international conflict, transparency matters. This site exists to document those political patterns. Not with speculation. With receipts.
+        </p>
+        <div class="rule-thin" style="margin:.75rem 0;"></div>
+        <div style="font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--gray);">Independent Audit · 2024</div>
+      </div>
+
+      <!-- TIMELINE -->
+      <div class="reveal" style="padding:1.5rem;background:white;border:1px solid var(--rule);">
+        <div style="font-family:'Playfair Display',serif;font-weight:700;font-size:1.1rem;margin-bottom:1.5rem;">Timeline of Key Events</div>
+        <div style="display:flex;flex-direction:column;gap:1.25rem;">
+          <div class="timeline-item">
+            <div style="font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--gray);margin-bottom:.25rem;">Oct 7, 2023</div>
+            <div style="font-size:.88rem;font-weight:600;">Hamas attacks Israel. Within days, the Federation begins mobilizing support and fundraising.</div>
+          </div>
+          <div class="timeline-item">
+            <div style="font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--gray);margin-bottom:.25rem;">Late 2023</div>
+            <div style="font-size:.88rem;font-weight:600;">Federation launches public messaging encouraging solidarity with Israel under banners like "Stand With Israel."</div>
+          </div>
+          <div class="timeline-item critical">
+            <div style="font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--red);margin-bottom:.25rem;">January 2024</div>
+            <div style="font-size:.88rem;font-weight:600;">The ICJ begins hearings in a genocide case involving Israel. The Observer does not report on the proceedings.</div>
+          </div>
+          <div class="timeline-item">
+            <div style="font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--gray);margin-bottom:.25rem;">Spring 2024</div>
+            <div style="font-size:.88rem;font-weight:600;">Observer continues publishing Federation solidarity events. No reporting appears on the ICJ case.</div>
+          </div>
+        </div>
+      </div>
+
+    </aside>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ MONEY -->
+<section id="money" class="section">
+  <div style="margin-bottom:2rem;">
+    <span class="card-label label-red" style="margin-bottom:.75rem;">Financial Investigation</span>
+    <h2 style="font-family:'Playfair Display',serif;font-weight:900;font-size:clamp(2rem,5vw,3.5rem);line-height:1.05;margin-bottom:.5rem;">Follow the Money</h2>
+    <p style="font-family:'DM Serif Display',serif;font-style:italic;font-size:1.15rem;color:var(--gray);">The mobilization of $850,000 from local Dayton donors to international political entities.</p>
+  </div>
+  <div class="rule-double" style="margin-bottom:2.5rem;"></div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:2.5rem;margin-bottom:2.5rem;">
+    <!-- NARRATIVE -->
+    <div style="display:flex;flex-direction:column;gap:1.5rem;">
+      <p class="pull-quote">
+        "When fundraising and journalism live under the same roof, questions naturally arise about editorial independence."
+      </p>
+      <div style="font-size:.9rem;line-height:1.75;color:#333;display:flex;flex-direction:column;gap:1rem;">
+        <p>Let’s talk about the numbers.</p>
+        <p>The Federation publicly states that it raises roughly $1,250,000 annually through community donations. Out of that fundraising activity, approximately $850,000 was raised for the State of Israel following October 7.</p>
+        <p><strong>That’s not a small program inside a large budget. That’s the majority of the annual fundraising total being directed toward a foreign political entity.</strong></p>
+        <p>And the messaging around it was clear. The Federation launched public campaigns declaring geopolitical solidarity with Israel and organized events under banners like "Stand With Israel." One event announcement published by the Observer described a community solidarity gathering centered on support for the Israeli state following the attacks.</p>
+        <p>The messaging was not neutral. It was not analytical. It was political solidarity and financial mobilization. Fundraising campaigns, public events, and community messaging all moved in the same direction: support the foreign state.</p>
+        <p>Again, the issue here is not that an organization supported a foreign government. Plenty of organizations do. The issue is that the same political actor that mobilized those funds also operates the community newspaper that many people rely on for objective information.</p>
+      </div>
+    </div>
+
+    <!-- CHART CARD -->
+    <div style="background:white;border:1px solid var(--rule);padding:2rem;display:flex;flex-direction:column;">
+      <div style="font-family:'Playfair Display',serif;font-weight:700;font-size:1.1rem;margin-bottom:1.5rem;">Fundraising Allocation vs Annual Total ($1.25M)</div>
+      <div class="chart-wrap" style="flex-grow:1;"><canvas id="moneyChart"></canvas></div>
+      <div class="rule-thin" style="margin:1.25rem 0;"></div>
+      <div style="background:var(--paper);border-left:4px solid var(--red);padding:1rem;">
+        <div style="font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--red);margin-bottom:.3rem;">Critical Finding</div>
+        <p style="font-size:.82rem;line-height:1.6;">The $850,000 raised specifically for Israel following October 7 comprises the vast majority of the Federation's $1.25 million annual community donation baseline.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- DATA TABLE -->
+  <div style="background:white;border:1px solid var(--rule);padding:2rem;">
+    <div style="font-family:'Playfair Display',serif;font-weight:700;font-size:1.1rem;margin-bottom:1.25rem;">Financial Breakdown: Stated Annual Fundraising</div>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Category</th>
+          <th>Amount</th>
+          <th>% of Annual Total</th>
+          <th>Context</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Israel Support (Post-Oct 7)</strong></td>
+          <td><strong>$850,000</strong></td>
+          <td class="flag-red">68.0%</td>
+          <td>Raised during active mobilization campaigns</td>
+        </tr>
+        <tr>
+          <td>Other Annual Fundraising</td>
+          <td>$400,000</td>
+          <td>32.0%</td>
+          <td>Remaining local/other initiatives</td>
+        </tr>
+        <tr style="background:var(--paper);">
+          <td><strong>Reported Annual Fundraising Total</strong></td>
+          <td><strong>$1,250,000</strong></td>
+          <td>100%</td>
+          <td>Federation's baseline stated metrics</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ POLICY -->
+<section id="policy" class="section">
+  <div style="margin-bottom:2rem;">
+    <span class="card-label label-blue" style="margin-bottom:.75rem;">Policy Investigation</span>
+    <h2 style="font-family:'Playfair Display',serif;font-weight:900;font-size:clamp(2rem,5vw,3.5rem);line-height:1.05;margin-bottom:.5rem;">When Institutional Positions Shape Coverage</h2>
+    <p style="font-family:'DM Serif Display',serif;font-style:italic;font-size:1.15rem;color:var(--gray);">The impact of organizational mandates on editorial independence.</p>
+  </div>
+  <div class="rule-double" style="margin-bottom:2.5rem;"></div>
+
+  <div style="display:grid;grid-template-columns:2fr 1fr;gap:2.5rem;">
+    <div>
+      <!-- PRIMARY DOCUMENT -->
+      <div class="doc-block" style="margin-bottom:2rem;">
+        <span class="card-label" style="background:rgba(255,255,255,.12);color:rgba(255,255,255,.5);letter-spacing:.25em;margin-bottom:1.25rem;">The Institutional "Line in the Sand"</span>
+        <blockquote style="font-family:'Playfair Display',serif;font-style:italic;font-weight:700;font-size:clamp(1.1rem,2.2vw,1.5rem);line-height:1.4;margin-bottom:1.25rem;position:relative;z-index:1;">
+          "There is no hiding it — our support for Israel is clear in the Jewish Federation’s mission. I start there to remind the entire community where we stand — firmly with Israel... there are two absolutes that need to be established to have a constructive dialogue. First, Israel has the right to exist... If there are those in the general or Jewish community who feel otherwise, it is a line in the sand that makes it unlikely we could have a simple 'agree to disagree' conversation."
+        </blockquote>
+        <div class="rule-thin" style="border-color:rgba(255,255,255,.1);margin-bottom:1rem;"></div>
+        <p style="font-size:.82rem;color:rgba(255,255,255,.45);letter-spacing:.05em;">— Dan Sweeny, Board President, Jewish Federation of Greater Dayton</p>
+        <p style="font-size:.82rem;color:rgba(255,255,255,.45);letter-spacing:.05em;margin-top:.5rem;">This statement establishes the parameters of acceptable discourse within the Federation and its media properties. A publication governed by this rigid institutional "absolute" cannot objectively cover international legal proceedings involving that same state.</p>
+      </div>
+
+      <!-- ANALYSIS -->
+      <div style="background:white;border:1px solid var(--rule);padding:2rem;margin-bottom:1.5rem;">
+        <div style="font-size:1rem;line-height:1.8;color:var(--ink);">
+          <p style="margin-bottom:1rem;">The Federation is not acting merely as a cultural or religious charity. It operates as a highly organized political actor. Its actions—mobilizing massive capital for a foreign state, organizing geopolitical solidarity rallies, and enforcing ideological mandates—are distinctly political.</p>
+          <p style="margin-bottom:1rem;">The Federation’s bylaws explicitly mandate support for the State of Israel. But when an institution with a fixed political mandate also owns the community newspaper, the lines between political advocacy and journalism do not just blur; they disappear.</p>
+          <p style="margin-bottom:1rem;">The Dayton Jewish Observer is published by the Federation. That means:</p>
+          <ul style="list-style-type: disc; padding-left: 2rem; margin-bottom: 1.5rem; color: var(--blue); font-weight: 500;">
+            <li><span style="color:var(--ink);font-weight:400;">A political actor controls the publication</span></li>
+            <li><span style="color:var(--ink);font-weight:400;">A political actor funds the publication</span></li>
+            <li><span style="color:var(--ink);font-weight:400;">A political actor sets the broader ideological tone</span></li>
+          </ul>
+          <p style="margin-bottom:1rem;">In theory, a publication owned by an organization can still maintain editorial independence. In practice, the coverage patterns reveal a newspaper functioning as a public relations arm.</p>
+          <p>When major international legal developments involving a foreign state occur and the newspaper does not report on them, it becomes impossible to separate political priorities from editorial decisions.</p>
+        </div>
+      </div>
+
+      <!-- POLICY POINTS -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+        <div class="evidence-card" style="padding:1.25rem;">
+          <div class="card-label label-red" style="margin-bottom:.75rem;">Constitutional Mandate</div>
+          <p style="font-size:.82rem;line-height:1.6;">Federation bylaws explicitly tie the Observer's broader mission to the political support of a foreign state — regardless of international legal context.</p>
+        </div>
+        <div class="evidence-card" style="padding:1.25rem;">
+          <div class="card-label label-blue" style="margin-bottom:.75rem;">Non-Profit Status</div>
+          <p style="font-size:.82rem;line-height:1.6;">IRS 501(c)(3) restrictions prohibit substantial partisan political activity. Fundraising tied to foreign geopolitical mobilization warrants strict regulatory scrutiny.</p>
+        </div>
+        <div class="evidence-card" style="padding:1.25rem;">
+          <div class="card-label label-outline" style="margin-bottom:.75rem;">Editorial Independence</div>
+          <p style="font-size:.82rem;line-height:1.6;">The Observer has no independent editorial board separated from Federation governance — the same political body organizing solidarity campaigns.</p>
+        </div>
+        <div class="evidence-card" style="padding:1.25rem;">
+          <div class="card-label label-outline" style="margin-bottom:.75rem;">Information Gaps</div>
+          <p style="font-size:.82rem;line-height:1.6;">When one side of an international political conflict is amplified by the funding institution, readers are denied an objective journalistic record.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- SIDEBAR -->
+    <aside>
+      <div class="doc-block" style="margin-bottom:1.5rem;padding:2rem;">
+        <span class="card-label" style="background:rgba(255,255,255,.12);color:rgba(255,255,255,.5);letter-spacing:.25em;margin-bottom:1.25rem;">The Blur</span>
+        <blockquote style="font-family:'Playfair Display',serif;font-style:italic;font-weight:700;font-size:clamp(1.2rem,2vw,1.6rem);line-height:1.3;margin-bottom:1.25rem;position:relative;z-index:1;">
+          "In theory, a publication owned by an organization can still maintain editorial independence. In practice, the coverage patterns raise questions."
+        </blockquote>
+      </div>
+
+      <div style="background:var(--paper);border:1px solid var(--rule);padding:1.5rem;margin-bottom:1.25rem;">
+        <div style="font-size:9.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--gray);margin-bottom:1rem;">Related Documents</div>
+        <div style="display:flex;flex-direction:column;gap:1rem;">
+          <div style="padding-bottom:1rem;border-bottom:1px solid var(--rule);">
+            <div style="font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--blue);margin-bottom:.3rem;">Bylaw Extract</div>
+            <a href="#" style="font-size:.82rem;font-weight:600;color:var(--ink);text-decoration:none;line-height:1.4;" onmouseover="this.style.color='var(--blue)'" onmouseout="this.style.color='var(--ink)'">Federation Institutional Mandate</a>
+          </div>
+          <div>
+            <div style="font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--blue);margin-bottom:.3rem;">IRS Analysis</div>
+            <a href="#" style="font-size:.82rem;font-weight:600;color:var(--ink);text-decoration:none;line-height:1.4;" onmouseover="this.style.color='var(--blue)'" onmouseout="this.style.color='var(--ink)'">501(c)3 Compliance &amp; Advocacy Reporting</a>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ MEDIA -->
+<section id="media" class="section">
+  <div style="margin-bottom:2rem;">
+    <span class="card-label label-outline" style="margin-bottom:.75rem;">Media Audit</span>
+    <h2 style="font-family:'Playfair Display',serif;font-weight:900;font-size:clamp(2rem,5vw,3.5rem);line-height:1.05;margin-bottom:.5rem;">The Coverage Gap</h2>
+    <p style="font-family:'DM Serif Display',serif;font-style:italic;font-size:1.15rem;color:var(--gray);">When the Federation wanted unity and money, the Observer had a megaphone. When the world started asking legal and moral questions, the silence got loud.</p>
+  </div>
+  <div class="rule-double" style="margin-bottom:2.5rem;"></div>
+
+  <!-- NARRATIVE INTRO -->
+  <div style="margin-bottom:3rem;max-width:900px;">
+    <h3 class="headline-lg" style="margin-bottom:1rem;">What They Covered. What They Didn't.</h3>
+    <p style="font-size:1.05rem;line-height:1.8;color:var(--ink);margin-bottom:1rem;">
+      This is where the pattern becomes obvious. When the Federation wanted turnout, solidarity, and money, the Observer was there. When the story turned toward legal scrutiny, human rights allegations, and international accountability, that’s where the silence starts.
+    </p>
+    <p style="font-size:1.05rem;line-height:1.8;color:var(--ink);margin-bottom:1rem;">
+      The issue is not that the Observer covered local solidarity events. Of course it did. The issue is what happened next. A community publication tied to a Federation raising major money for Israel had a responsibility to at least inform readers that the rest of the world was debating questions of international law, mass civilian death, starvation, siege, displacement, settler violence, and genocide allegations.
+    </p>
+    <p style="font-size:1.05rem;font-weight:700;line-height:1.8;color:var(--red);">
+      Instead, what readers got was solidarity, fundraising, and institutional messaging.
+    </p>
+  </div>
+
+  <!-- DOSSIER CARDS (VISUAL AUDIT) -->
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.5rem;margin-bottom:3rem;">
+    <div class="dossier-card reveal">
+      <div class="stat-num">0</div>
+      <div class="stat-label">ICJ Proceedings Covered by Observer</div>
+    </div>
+    <div class="dossier-card reveal">
+      <div class="stat-num">0</div>
+      <div class="stat-label">Condemnations of Settlements Found</div>
+    </div>
+    <div class="dossier-card reveal">
+      <div class="stat-num">0</div>
+      <div class="stat-label">Condemnations of Settler Violence Found</div>
+    </div>
+    <div class="dossier-card reveal" style="border-top-color:var(--gray);">
+      <div class="stat-num">0</div>
+      <div class="stat-label">Explicit Criticisms of Israeli Government Wrongdoing</div>
+    </div>
+  </div>
+
+  <!-- SIDE-BY-SIDE SPLIT SCREEN TIMELINE -->
+  <div style="background:white;border:1px solid var(--rule);padding:2rem;margin-bottom:3rem;">
+    <h3 class="headline-md" style="margin-bottom:2rem;text-align:center;">Observer vs. The World: Side-by-Side Comparison</h3>
+    
+    <!-- ROW 1 -->
+    <div class="split-row reveal">
+      <div class="split-col">
+        <span class="card-label label-blue self-start">Oct. 9–10, 2023</span>
+        <div style="font-size:9.5px;font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:var(--blue);">What The Observer Published</div>
+        <h4 style="font-family:'Playfair Display',serif;font-weight:700;font-size:1.2rem;">"Stand With Israel: A Community Solidarity Gathering"</h4>
+        <p style="font-size:.9rem;line-height:1.6;color:var(--ink);">The Observer promoted the gathering and quoted Federation leadership saying, "We stand as a united community to show our support for the people of Israel." It also directed readers to a Jewish Federations fund supporting Israel.</p>
+      </div>
+      <div class="split-col">
+        <span class="card-label label-red self-start">Oct. 9–10, 2023</span>
+        <div style="font-size:9.5px;font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:var(--red);">Global Developments</div>
+        <h4 style="font-family:'Playfair Display',serif;font-weight:700;font-size:1.2rem;">Siege and Bombardment</h4>
+        <p style="font-size:.9rem;line-height:1.6;color:var(--ink);">Global coverage quickly moved beyond the initial attacks to include the siege of Gaza, bombardment, mass displacement, and the humanitarian implications of the war.</p>
+        <div class="missing-context">
+          <div class="missing-context-label">Why the Gap Matters</div>
+          <div class="missing-context-text">This establishes the paper’s posture immediately: solidarity first, fundraising second, no visible distance from the institution leading both.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ROW 2 -->
+    <div class="split-row reveal">
+      <div class="split-col">
+        <span class="card-label label-blue self-start">Late 2023</span>
+        <div style="font-size:9.5px;font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:var(--blue);">What The Federation Highlighted</div>
+        <h4 style="font-family:'Playfair Display',serif;font-weight:700;font-size:1.2rem;">Public Financial Impact</h4>
+        <p style="font-size:.9rem;line-height:1.6;color:var(--ink);">The Federation’s public-facing messaging emphasized support for Israel and fundraising, directly highlighting $850,000 raised for Israel against $1,250,000 raised annually.</p>
+      </div>
+      <div class="split-col">
+        <span class="card-label label-red self-start">Late 2023</span>
+        <div style="font-size:9.5px;font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:var(--red);">Global Developments</div>
+        <h4 style="font-family:'Playfair Display',serif;font-weight:700;font-size:1.2rem;">International Legal Debate</h4>
+        <p style="font-size:.9rem;line-height:1.6;color:var(--ink);">At the same time, international debate was centered on proportionality, civilian casualties, collective punishment, and whether Israel’s conduct was violating international law.</p>
+        <div class="missing-context">
+          <div class="missing-context-label">Why the Gap Matters</div>
+          <div class="missing-context-text">Put plainly: the local institutional message was "mobilize and give," while the global debate was "what is being done in Gaza, and is it lawful?"</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ROW 3 -->
+    <div class="split-row reveal">
+      <div class="split-col">
+        <span class="card-label label-blue self-start">January 2024</span>
+        <div style="font-size:9.5px;font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:var(--blue);">What The Observer Published</div>
+        <h4 style="font-family:'Playfair Display',serif;font-weight:700;font-size:1.2rem;">Local Amplification</h4>
+        <p style="font-size:.9rem;line-height:1.6;color:var(--ink);">The Observer is documented as continuing to amplify local solidarity and fundraising messaging for the Federation.</p>
+      </div>
+      <div class="split-col">
+        <span class="card-label label-red self-start">January 2024</span>
+        <div style="font-size:9.5px;font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:var(--red);">Global Developments</div>
+        <h4 style="font-family:'Playfair Display',serif;font-weight:700;font-size:1.2rem;">The ICJ Genocide Case</h4>
+        <p style="font-size:.9rem;line-height:1.6;color:var(--ink);">The ICJ hearings in South Africa v. Israel became one of the biggest international legal stories in the world.</p>
+        <div class="missing-context">
+          <div class="missing-context-label">Why the Gap Matters</div>
+          <div class="missing-context-text">A reader depending on local institutional media could come away with a radically incomplete understanding of the conflict. For them, the case might as well not have existed.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ROW 4 -->
+    <div class="split-row reveal" style="border-bottom:none;">
+      <div class="split-col">
+        <span class="card-label label-blue self-start">Spring 2024 - Ongoing</span>
+        <div style="font-size:9.5px;font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:var(--blue);">What The Observer Published</div>
+        <h4 style="font-family:'Playfair Display',serif;font-weight:700;font-size:1.2rem;">100% Alignment</h4>
+        <p style="font-size:.9rem;line-height:1.6;color:var(--ink);">The Federation’s public "impact" framing includes raising major money for Israel as a point of pride. The Observer reported zero ICJ proceedings.</p>
+      </div>
+      <div class="split-col">
+        <span class="card-label label-red self-start">Spring 2024 - Ongoing</span>
+        <div style="font-size:9.5px;font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:var(--red);">Global Developments</div>
+        <h4 style="font-family:'Playfair Display',serif;font-weight:700;font-size:1.2rem;">Humanitarian Collapse</h4>
+        <p style="font-size:.9rem;line-height:1.6;color:var(--ink);">Major human rights debates centered on famine warnings, casualty estimates, and whether continued unconditional support for Israel amid these allegations was morally defensible.</p>
+        <div class="missing-context">
+          <div class="missing-context-label">Why the Gap Matters</div>
+          <div class="missing-context-text">This is the core accountability point: not just support, but unconditional support during a period of plausible genocide allegations.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="font-size:.85rem;color:var(--gray);font-style:italic;margin-top:1rem;border-top:1px solid var(--rule);padding-top:1rem;">
+    <strong>Methodology Note:</strong> This comparison is based on archived Federation and Observer materials collected by this project. Rows and dossier metrics marked as "0" or "no coverage found" represent the findings of our explicit keyword omission audit spanning FY2024. See the Archive section for source datasets.
+  </div>
+
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ ADVERTISERS -->
+<section id="advertisers" class="section">
+  <div style="margin-bottom:2rem;">
+    <span class="card-label label-red" style="margin-bottom:.75rem;">Advertisers Deserve To Know</span>
+    <h2 style="font-family:'Playfair Display',serif;font-weight:900;font-size:clamp(2rem,5vw,3.5rem);line-height:1.05;margin-bottom:.5rem;">Know the Politics of the Institution Your Advertising Supports</h2>
+    <p style="font-family:'DM Serif Display',serif;font-style:italic;font-size:1.15rem;color:var(--gray);">The Observer is not just a newspaper. It is part of a political advocacy institution.</p>
+  </div>
+  <div class="rule-double" style="margin-bottom:2.5rem;"></div>
+
+  <div style="display:grid;grid-template-columns:1fr 380px;gap:2.5rem;align-items:start;">
+    <div>
+      <div style="font-size:1rem;line-height:1.8;color:var(--ink);margin-bottom:2rem;">
+        <p style="margin-bottom:1rem;font-weight:700;font-size:1.1rem;">Dear Advertisers,</p>
+        <p style="margin-bottom:1rem;">If you advertise with the Dayton Jewish Observer, there is something important you should understand.</p>
+        <p style="margin-bottom:1rem;">This publication is not simply a community newspaper. It is part of a larger institution that has taken clear political positions regarding Israel and the current war. The Observer is published by the Jewish Federation of Greater Dayton.</p>
+        <p style="margin-bottom:1rem;">That means the paper you advertise in is directly connected to an organization that:</p>
+        <ul style="list-style-type: disc; padding-left: 2rem; margin-bottom: 1.5rem; color: var(--blue); font-weight: 500;">
+          <li><span style="color:var(--ink);font-weight:400;">Raises large amounts of money for Israel</span></li>
+          <li><span style="color:var(--ink);font-weight:400;">Organizes public political solidarity events</span></li>
+          <li><span style="color:var(--ink);font-weight:400;">Promotes advocacy messaging in support of Israel</span></li>
+          <li><span style="color:var(--ink);font-weight:400;">Encourages the local community to mobilize politically around that support</span></li>
+        </ul>
+        <p style="font-size:1.1rem;font-weight:700;color:var(--ink);margin-bottom:1rem;border-left:3px solid var(--red);padding-left:1rem;">
+          Advertising in the Observer does not just support a newspaper. It supports that entire institutional structure and its political messaging. This page exists so advertisers understand exactly what that means.
+        </p>
+      </div>
+
+      <div class="rule-thick" style="margin-bottom:1.5rem;"></div>
+
+      <h3 class="headline-lg" style="margin-bottom:1rem;">This Is a Political Institution</h3>
+      <p style="font-size:1rem;line-height:1.8;color:var(--ink);margin-bottom:1rem;">
+        The Federation is not just a charity and the Observer is not simply a neutral news outlet. Together they function as an institutional platform that mobilizes fundraising for Israel, organizes public political solidarity events, promotes messaging aligned with the Israeli government, and amplifies those efforts through the Observer.
+      </p>
+      <p style="font-size:1rem;line-height:1.8;color:var(--ink);margin-bottom:1.5rem;">
+        The Federation’s own public materials emphasize the scale of this mobilization. According to the organization’s website: <strong>$1,250,000 raised annually</strong> and <strong>$850,000 raised specifically for Israel.</strong> Those numbers are not hidden. They are presented proudly as part of the institution’s impact. But they also make something very clear: Supporting Israel is not a small program inside the organization. It is central to what the institution does.
+      </p>
+
+      <h3 class="headline-lg" style="margin-bottom:1rem;">The Newspaper Promotes the Institution’s Politics</h3>
+      <p style="font-size:1rem;line-height:1.8;color:var(--ink);margin-bottom:1.5rem;">
+        The Observer regularly publishes coverage that promotes Federation initiatives and messaging. One example is an Observer article titled: <em>"Stand With Israel: A Community Solidarity Gathering."</em> The article promoted a public event organized by community leaders and quoted Federation leadership saying: "We stand as a united community to show our support for the people of Israel." It also directed readers to a national fundraising campaign. This is not investigative journalism. It is institutional messaging.
+      </p>
+
+      <h3 class="headline-lg" style="margin-bottom:1rem;">What This Means for Advertisers</h3>
+      <p style="font-size:1rem;line-height:1.8;color:var(--ink);margin-bottom:1.5rem;">
+        Most advertisers in the Observer are local businesses. Restaurants. Doctors. Shops. Community services. Many likely view their ads as a way to reach readers and support a local publication. But advertising in the Observer also means financially supporting a media platform that operates within a political advocacy structure.
+        <br><br>
+        Your ad dollars help sustain the newspaper, the institution behind it, and the messaging that institution promotes. Advertisers deserve to know that. Not because they should stop advertising. But because transparency matters.
+      </p>
+
+      <div style="background:var(--ink);color:white;padding:2rem;margin-bottom:2.5rem;text-align:center;">
+        <p style="font-family:'Playfair Display',serif;font-style:italic;font-size:1.5rem;line-height:1.4;">
+          "This page is not about religion. It is not about ethnicity. It is not about culture. It is about institutional politics."
+        </p>
+      </div>
+
+      <h3 class="headline-md" style="margin-bottom:1rem;">Transparency Checklist for Advertisers</h3>
+      <p style="font-size:.9rem;line-height:1.6;color:var(--gray);margin-bottom:1rem;">
+        If you advertise with the Observer, you may want to ask a few simple questions:
+      </p>
+      <ul style="list-style-type: square; padding-left: 1.5rem; margin-bottom: 2rem; color: var(--ink); font-weight: 500; font-size:.95rem; line-height: 1.8;">
+        <li>Who owns the publication I’m advertising in?</li>
+        <li>What campaigns and political messaging does that organization run?</li>
+        <li>Does the publication operate independently from those campaigns?</li>
+        <li>How does the publication cover major developments related to the issues the institution advocates around?</li>
+      </ul>
+      <p style="font-size:.95rem;line-height:1.6;color:var(--ink);">
+        Once advertisers have that information, they can make their own decisions. Transparency simply ensures those decisions are informed.
+      </p>
+    </div>
+
+    <!-- SIDEBAR -->
+    <aside>
+      <!-- FLOW GRAPHIC -->
+      <div style="background:white;border:1px solid var(--rule);padding:1.5rem;margin-bottom:1.5rem;" class="reveal">
+        <h4 style="font-family:'Playfair Display',serif;font-weight:700;font-size:1.1rem;margin-bottom:1.5rem;text-align:center;">Where Advertising Money Goes</h4>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:.5rem;text-align:center;">
+           <div class="flow-box">Local Advertisers</div>
+           <div class="flow-arrow">↓</div>
+           <div class="flow-box">Advertising Revenue</div>
+           <div class="flow-arrow">↓</div>
+           <div class="flow-box" style="background:var(--blue-light);border-color:var(--blue);color:var(--blue);">Dayton Jewish Observer</div>
+           <div class="flow-arrow">↓</div>
+           <div class="flow-box" style="background:var(--ink);color:white;border-color:var(--ink);">Published by Jewish Federation</div>
+           <div class="flow-arrow" style="color:var(--red);">↓</div>
+           <div class="flow-box" style="background:#fee2e2;color:var(--red);border-color:var(--red);">Institutional Campaigns & Messaging</div>
+           <div class="flow-arrow" style="color:var(--red);">↓</div>
+           <div class="flow-box" style="background:var(--red);color:white;border-color:var(--red);">Fundraising & Political Advocacy around Israel</div>
+        </div>
+      </div>
+
+      <!-- INSTITUTIONAL FACTS PANEL -->
+      <div class="sidebar-dark reveal" style="padding:1.75rem;margin-bottom:1.5rem;">
+        <h5 style="font-size:9.5px;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:1.25rem;">Institutional Facts</h5>
+
+        <div class="sidebar-section">
+          <span class="card-label" style="background:rgba(255,255,255,.1);color:rgba(255,255,255,.5);margin-bottom:.5rem;">Ownership</span>
+          <div style="font-size:.85rem;font-weight:600;color:white;line-height:1.4;">Observer is wholly published by the Jewish Federation of Greater Dayton</div>
+        </div>
+        <div class="sidebar-section">
+          <span class="card-label" style="background:rgba(255,255,255,.1);color:rgba(255,255,255,.5);margin-bottom:.5rem;">Foreign Fundraising</span>
+          <div style="font-size:.85rem;font-weight:600;color:white;line-height:1.4;">$850,000 raised specifically for Israel following Oct 7</div>
+        </div>
+        <div class="sidebar-section">
+          <span class="card-label" style="background:rgba(255,255,255,.1);color:rgba(255,255,255,.5);margin-bottom:.5rem;">Annual Campaign</span>
+          <div style="font-size:.85rem;font-weight:600;color:white;line-height:1.4;">$1,250,000 raised annually overall</div>
+        </div>
+        <div class="sidebar-section" style="border-bottom:none;padding-bottom:0;margin-bottom:0;">
+          <span class="card-label" style="background:rgba(255,255,255,.1);color:rgba(255,255,255,.5);margin-bottom:.5rem;">Institutional Role</span>
+          <div style="font-size:.85rem;font-weight:600;color:white;line-height:1.4;">Observer amplifies Federation events and strategic messaging</div>
+        </div>
+      </div>
+
+      <!-- EVIDENCE CARD -->
+      <div class="evidence-card reveal" style="padding:1.5rem;">
+        <div class="card-label label-red" style="margin-bottom:.75rem;">Evidence Card</div>
+        <h4 style="font-family:'Playfair Display',serif;font-weight:700;font-size:1.1rem;margin-bottom:.5rem;">"Stand With Israel: A Community Solidarity Gathering"</h4>
+        <p style="font-size:.82rem;color:var(--gray);line-height:1.6;margin-bottom:1rem;">Observer article promoting a Federation-backed solidarity event and directly routing readers to a national fundraising campaign supporting Israel.</p>
+        <span style="font-size:9.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--blue);">View in Archive →</span>
+      </div>
+
+    </aside>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ ARCHIVE -->
+<section id="archive" class="section">
+  <div style="margin-bottom:2rem;">
+    <span class="card-label label-outline" style="margin-bottom:.75rem;">Public Archive</span>
+    <h2 style="font-family:'Playfair Display',serif;font-weight:900;font-size:clamp(2rem,5vw,3.5rem);line-height:1.05;margin-bottom:.5rem;">Document Archive</h2>
+    <p style="font-family:'DM Serif Display',serif;font-style:italic;font-size:1.15rem;color:var(--gray);">Verified primary sources underlying every claim in this project.</p>
+  </div>
+  <div class="rule-double" style="margin-bottom:2.5rem;"></div>
+
+  <div class="archive-row header">
+    <div style="font-size:9px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;">Type</div>
+    <div style="font-size:9px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;">Document</div>
+    <div style="font-size:9px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;">Date</div>
+    <div style="font-size:9px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;">Relevance</div>
+  </div>
+  <div class="archive-row">
+    <span class="archive-tag" style="background:#fee2e2;color:var(--red);">Tax / IRS</span>
+    <a href="#" style="font-size:.83rem;font-weight:600;color:var(--ink);text-decoration:none;" onmouseover="this.style.color='var(--blue)'" onmouseout="this.style.color='var(--ink)'">IRS Form 990 — Annual Filing (Net Assets, Foreign Grants)</a>
+    <span style="font-size:.78rem;color:var(--gray);">Filed Apr 2024</span>
+    <span class="flag-red" style="font-size:.78rem;">Critical</span>
+  </div>
+  <div class="archive-row">
+    <span class="archive-tag" style="background:#dbeafe;color:var(--blue);">Bylaw</span>
+    <a href="#" style="font-size:.83rem;font-weight:600;color:var(--ink);text-decoration:none;" onmouseover="this.style.color='var(--blue)'" onmouseout="this.style.color='var(--ink)'">Federation Institutional Mandate regarding Israel Support</a>
+    <span style="font-size:.78rem;color:var(--gray);">Amended 2023</span>
+    <span class="flag-red" style="font-size:.78rem;">Critical</span>
+  </div>
+  <div class="archive-row">
+    <span class="archive-tag" style="background:#f5f5f5;color:var(--gray);">Primary</span>
+    <a href="#" style="font-size:.83rem;font-weight:600;color:var(--ink);text-decoration:none;" onmouseover="this.style.color='var(--blue)'" onmouseout="this.style.color='var(--ink)'">Federation Public Campaign Data — "$850,000 Raised"</a>
+    <span style="font-size:.78rem;color:var(--gray);">Early 2024</span>
+    <span class="flag-red" style="font-size:.78rem;">Critical</span>
+  </div>
+  <div class="archive-row">
+    <span class="archive-tag" style="background:#f5f5f5;color:var(--gray);">Primary</span>
+    <a href="#" style="font-size:.83rem;font-weight:600;color:var(--ink);text-decoration:none;" onmouseover="this.style.color='var(--blue)'" onmouseout="this.style.color='var(--ink)'">Observer Article: "Stand With Israel: A Community Solidarity Gathering"</a>
+    <span style="font-size:.78rem;color:var(--gray);">Oct 9, 2023</span>
+    <span class="flag-red" style="font-size:.78rem;">Critical</span>
+  </div>
+  <div class="archive-row">
+    <span class="archive-tag" style="background:#dbeafe;color:var(--blue);">Media</span>
+    <a href="#" style="font-size:.83rem;font-weight:600;color:var(--ink);text-decoration:none;" onmouseover="this.style.color='var(--blue)'" onmouseout="this.style.color='var(--ink)'">Observer Archive: Editorial Code and Omission Audit Dataset</a>
+    <span style="font-size:.78rem;color:var(--gray);">Compiled 2024</span>
+    <span class="flag-blue" style="font-size:.78rem;">High</span>
+  </div>
+  <div class="archive-row">
+    <span class="archive-tag" style="background:#f5f5f5;color:var(--gray);">Court</span>
+    <a href="#" style="font-size:.83rem;font-weight:600;color:var(--ink);text-decoration:none;" onmouseover="this.style.color='var(--blue)'" onmouseout="this.style.color='var(--ink)'">ICJ Case: South Africa v. Israel — Public Record</a>
+    <span style="font-size:.78rem;color:var(--gray);">Jan 2024</span>
+    <span class="flag-blue" style="font-size:.78rem;">High</span>
+  </div>
+  <div class="archive-row">
+    <span class="archive-tag" style="background:#fee2e2;color:var(--red);">Media</span>
+    <a href="#" style="font-size:.83rem;font-weight:600;color:var(--ink);text-decoration:none;" onmouseover="this.style.color='var(--blue)'" onmouseout="this.style.color='var(--ink)'">Keyword Frequency Dataset: "ICJ," "genocide," "settler violence"</a>
+    <span style="font-size:.78rem;color:var(--gray);">2024</span>
+    <span class="flag-red" style="font-size:.78rem;">Critical</span>
+  </div>
+
+  <div style="margin-top:2rem;background:var(--paper);border:1px solid var(--rule);padding:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+    <div>
+      <div style="font-family:'Playfair Display',serif;font-weight:700;font-size:1rem;margin-bottom:.25rem;">Request Additional Records</div>
+      <p style="font-size:.8rem;color:var(--gray);">This archive is updated as new primary sources are verified. All documents available upon request for journalists and researchers.</p>
+    </div>
+    <button style="padding:.7rem 1.5rem;background:var(--blue);color:white;font-size:9.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;border:none;cursor:pointer;" onmouseover="this.style.background='var(--ink)'" onmouseout="this.style.background='var(--blue)'">
+      Submit Records Request
+    </button>
+  </div>
+  
+  <div style="font-size:.85rem;color:var(--gray);font-style:italic;margin-top:2rem;border-top:1px solid var(--rule);padding-top:1rem;">
+    <strong>Methodology:</strong> This project relies on a comprehensive review of publicly available institutional records. Rows marked as “no coverage found” or "0" in the Media Audit section reflect our complete search of the Observer's published print and digital archives during the stated periods. We invite any verified corrections.
+  </div>
+</section>
+
+</main>
+
+<!-- FOOTER -->
+<footer style="background:var(--ink);color:white;padding:3rem 1.5rem 2rem;">
+  <div style="max-width:1280px;margin:auto;">
+    <div style="display:grid;grid-template-columns:auto 1fr auto;gap:2rem;align-items:start;flex-wrap:wrap;margin-bottom:2rem;">
+      <div>
+        <div style="display:flex;align-items:baseline;gap:.3rem;margin-bottom:.15rem;">
+          <span style="font-family:'Playfair Display',serif;font-style:italic;font-size:.9rem;color:rgba(255,255,255,.4);">The Dayton</span>
+          <span style="font-family:'Playfair Display',serif;font-weight:900;font-size:2.2rem;color:#4a90d9;line-height:1;">Jewish</span>
+        </div>
+        <div style="font-family:'DM Sans',sans-serif;font-weight:700;font-size:1rem;letter-spacing:.2em;text-transform:uppercase;">Observer</div>
+        <div style="font-size:9px;font-weight:700;letter-spacing:.4em;text-transform:uppercase;color:var(--red);margin-top:.4rem;">Accountability Project</div>
+      </div>
+      <div></div>
+      <div style="display:flex;gap:3rem;flex-wrap:wrap;">
+        <div>
+          <div style="font-size:9px;font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.25);margin-bottom:.75rem;">Sections</div>
+          <div style="display:flex;flex-direction:column;gap:.4rem;">
+            <a href="#" onclick="showSection('money',document.querySelectorAll('.tab-btn')[1])" style="font-size:.8rem;font-weight:600;color:rgba(255,255,255,.55);text-decoration:none;" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255,255,255,.55)'">Financial Audit</a>
+            <a href="#" onclick="showSection('policy',document.querySelectorAll('.tab-btn')[2])" style="font-size:.8rem;font-weight:600;color:rgba(255,255,255,.55);text-decoration:none;" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255,255,255,.55)'">Policy Analysis</a>
+            <a href="#" onclick="showSection('media',document.querySelectorAll('.tab-btn')[3])" style="font-size:.8rem;font-weight:600;color:rgba(255,255,255,.55);text-decoration:none;" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255,255,255,.55)'">Media Oversight</a>
+            <a href="#" onclick="showSection('advertisers',document.querySelectorAll('.tab-btn')[4])" style="font-size:.8rem;font-weight:600;color:rgba(255,255,255,.55);text-decoration:none;" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255,255,255,.55)'">Advertisers</a>
+            <a href="#" onclick="showSection('archive',document.querySelectorAll('.tab-btn')[5])" style="font-size:.8rem;font-weight:600;color:rgba(255,255,255,.55);text-decoration:none;" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255,255,255,.55)'">Public Archive</a>
+          </div>
+        </div>
+        <div style="max-width:220px;">
+          <div style="font-size:9px;font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.25);margin-bottom:.75rem;">Transparency</div>
+          <p style="font-size:.78rem;color:rgba(255,255,255,.4);line-height:1.65;">
+            This site is not affiliated with the Jewish Federation of Greater Dayton. It is an independent public-interest documentation project based on verified primary sources.
+          </p>
+        </div>
+      </div>
+    </div>
+    <div style="height:1px;background:rgba(255,255,255,.08);margin-bottom:1.25rem;"></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem;">
+      <p style="font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:rgba(255,255,255,.2);">Records · Analysis · Accountability · 2024</p>
+      <p style="font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.15);">Independent Monitoring Project</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ── NAVIGATION ──
+function showSection(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (id === 'money') initMoneyChart();
+  // run reveals
+  setTimeout(runReveal, 100);
+}
+
+// ── SCROLL REVEAL ──
+function runReveal() {
+  document.querySelectorAll('.reveal').forEach(el => {
+    const rect = el.getBoundingClientRect();
+    if (rect.top < window.innerHeight - 60) el.classList.add('visible');
+  });
+}
+window.addEventListener('scroll', runReveal);
+window.addEventListener('load', () => { runReveal(); });
+
+// ── MONEY CHART ──
+let moneyChart = null;
+function initMoneyChart() {
+  const ctx = document.getElementById('moneyChart');
+  if (!ctx) return;
+  if (moneyChart) { moneyChart.destroy(); }
+  moneyChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['Israel Campaigns (Post-Oct 7)', 'Other Annual Programs / Local'],
+      datasets: [{
+        data: [850000, 400000],
+        backgroundColor: ['#8b0000', '#374151'],
+        borderWidth: 0,
+        borderRadius: 2
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false },
+        tooltip: { callbacks: { label: c => ' $' + c.raw.toLocaleString() } }
+      },
+      scales: {
+        x: {
+          grid: { color: '#f3f0eb' },
+          ticks: { font: { family: 'DM Sans', size: 11 }, callback: v => '$' + (v/1000).toFixed(0) + 'K' }
+        },
+        y: { grid: { display: false }, ticks: { font: { family: 'Playfair Display', weight: 'bold', size: 11 } } }
+      }
+    }
+  });
+}
+
+// ── INIT ──
+document.addEventListener('DOMContentLoaded', () => {
+  runReveal();
+});
+</script>
+</body>
+</html>
